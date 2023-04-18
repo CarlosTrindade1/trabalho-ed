@@ -109,8 +109,11 @@ void Heap::makeConnections() {
         cin >> IP2;
         cin >> coast;
 
-        int index = search(IP1);
-        vector[index].list.add(IP2, coast);
+        int indexIP1 = search(IP1);
+        int indexIP2 = search(IP2);
+
+        vector[indexIP1].list.add(IP2, coast);
+        vector[indexIP2].list.add(IP1, coast);
     }
 }
 
@@ -225,8 +228,6 @@ int Heap::minimumCoastNetwork() {
 
     createMinHeap();
 
-    print();
-
     while(sizeVector != 0) {
         Network min = getMin();
 
@@ -238,9 +239,6 @@ int Heap::minimumCoastNetwork() {
                 decreasesPriority(indexNetwork, conn->coast);
             }
         }
-
-        print();
-
     }
 
     return total;
