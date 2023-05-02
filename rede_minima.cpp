@@ -4,7 +4,7 @@
 * Trabalho 1
 * Professor(a): Fábio Viduani
 *
-***************************************************/
+*/
 
 #include <iostream>
 #define MAX 20
@@ -25,6 +25,7 @@ class List {
     public:
         List();
         void add(char IP[MAX], int coast);
+        void print();
         Connection* start;
 };
 
@@ -39,6 +40,7 @@ class Heap {
         Heap();
         ~Heap();
         void makeConnections();
+        void print();
         int minimumCoastNetwork();
 
     private:
@@ -60,11 +62,6 @@ class Heap {
 };
 
 // Métodos da classe Heap
-
-/*
-    Inicia o vetor de networks, alocando dinamicamente na memória, com n posições;
-    define as prioridades para INFINITY e inicia a lista encadeada em cada uma das n posições.
-*/
 Heap::Heap() {
     cin >> sizeVector;
 
@@ -77,17 +74,10 @@ Heap::Heap() {
     }
 }
 
-/*
-    Libera o espaço alocado dinamicamente pelo vetor de networks.
-*/
 Heap::~Heap() {
     delete vector;
 }
 
-/*
-    Recebe um IP e realiza uma busca sequencial por esse IP no vetor de networks.
-    Caso encontre, retorna o indíce de posição. Caso não encontre, retorna -1.
-*/
 int Heap::search(char* IP) {
     for (int i = 0; i < sizeVector; i++) {
         if (compareStrings(vector[i].IP, IP)) return i;
@@ -96,12 +86,6 @@ int Heap::search(char* IP) {
     return -1;
 }
 
-
-/*
-    Esta função recebe dois vetores de caracteres e realiza
-    a comparação entre eles. Caso sejam iguais, a função retorna 'true';
-    caso contrário, retorna 'false'.
-*/
 bool Heap::compareStrings(char* str1, char* str2) {
     bool isEquals = true;
 
@@ -124,10 +108,6 @@ bool Heap::compareStrings(char* str1, char* str2) {
     return isEquals;
 }
 
-/*
-    Esta função realiza a leitura da entrada de dados das conexões entre
-    os IPs da rede. Cada conexão é armazenada na lista encadeada do respectivos IP.
-*/
 void Heap::makeConnections() {
     int sizeConnections;
 
@@ -150,31 +130,28 @@ void Heap::makeConnections() {
     }
 }
 
-/*
-    Esta função retorna o pai de um determinado elemento i em um heap.
-*/
+void Heap::print() {
+    for (int i = 0; i < sizeVector; i++) {
+        cout << "IP: " << vector[i].IP << endl;
+        cout << "PRIORIDADE: " << vector[i].priority << endl;
+        cout << "CONEXÕES:" << endl;
+        vector[i].list.print();
+    }
+    cout << endl;
+}
+
 int Heap::daddy(int i) {
     return (i - 1) / 2;
 }
 
-/*
-    Esta função retorna o filho esquerdo de um determinado elemento i em um heap.
-*/
 int Heap::left(int i) {
     return 2 * i + 1;
 }
 
-/*
-    Esta função retorna o filho direito de um determinado elemento i em um heap.
-*/
 int Heap::right(int i) {
     return 2 * i + 2;
 }
 
-/*
-    Esta função 'desce' um determinado elemento i em um min-heap, a fim de se manter
-    a propriedade do min-heap.
-*/
 void Heap::down(int i) {
     int L, R, smaller = i;
 
@@ -195,10 +172,6 @@ void Heap::down(int i) {
     }
 }
 
-/*
-    Esta função 'sobe' um determinado elemento i em um min-heap, a fim de se manter
-    a propriedade do min-heap.
-*/
 void Heap::up(int i) {
     while (vector[daddy(i)].priority > vector[i].priority) {
         shift(i, daddy(i));
@@ -206,31 +179,18 @@ void Heap::up(int i) {
     }
 }
 
-/*
-    Esta função recebe os índices de dois elementos em um vetor e realiza
-    a troca de posição entre eles.
-*/
 void Heap::shift(int i, int j) {
     Network aux = vector[i];
     vector[i] = vector[j];
     vector[j] = aux;
 }
 
-/*
-    Esta função realiza a criação da estrutura de dados min-heap em um determinado
-    vetor.
-*/
 void Heap::createMinHeap() {
     for (int i = sizeVector / 2 - 1; i >= 0; i--) {
         down(i);
     }
 }
 
-/*
-    Esta função obtém o elemento de menor prioridade em um min-heap. Após realizar 
-    a retirada deste, é realizado o redimensionamento do vetor. A função retorna o elemento,
-    caso exista, ou um elemento vazio, caso não exista.
-*/
 Network Heap::getMin() {
     Network host;
 
@@ -265,11 +225,6 @@ Network Heap::getMin() {
     return net;
 }
 
-/*
-    Esta função diminui a proridade de um elemento em um min-heap. Após alterar
-    a prioridade, a função realiza o deslocamento do novo elemento para a posição correta
-    no vetor, obedecendo as propriedades de um min-heap.
-*/
 void Heap::decreasesPriority(int i, int priority) {
     if (vector[i].priority < priority) {
         cout << "ERRO: nova prioridade é maior que a existente" << endl;
@@ -280,10 +235,6 @@ void Heap::decreasesPriority(int i, int priority) {
     }
 }
 
-/*
-    Esta função realiza o cálculo de custo mínimo com base na rede
-    estabelecida no heap. Ao final, retorna o valor de custo mínimo para a rede.
-*/
 int Heap::minimumCoastNetwork() {
     vector[0].priority = 0;
     int total = 0;
@@ -311,10 +262,6 @@ List::List() {
     start = nullptr;
 }
 
-/*
-    Esta função recebe um IP e um custo de uma determinada conexão entre IPs
-    e adiciona no começo de uma lista encadeada.
-*/
 void List::add(char* IP, int coast) {
     Connection* conn = new Connection;
 
@@ -325,19 +272,20 @@ void List::add(char* IP, int coast) {
     start = conn;
 }
 
-/*
-    Função principal:
-        - Instancia um objeto da classe Heap
-        - Lê a entrada
-        - Calcula o valor de custo mínimo da rede e imprimi no terminal
-*/
+void List::print() {
+    for (Connection* current = start; current != nullptr; current = current->next) {
+        cout << "IP: " << current->IP << endl;
+        cout << "CUSTO: " << current->coast << endl;
+    }
+}
+
 int main() {
     Heap h = Heap();
     h.makeConnections();
 
     cout << h.minimumCoastNetwork() << endl;
 
-    //h.~Heap();
+    h.~Heap();
 
     return 0;
 }
