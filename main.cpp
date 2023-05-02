@@ -1,3 +1,11 @@
+/**************************************************
+*
+* Nome do(a)(s) estudante(s): Carlos Trindade e Yan Marcos
+* Trabalho 1
+* Professor(a): Fábio Viduani
+*
+*/
+
 #include <iostream>
 #define MAX 20
 #define INFINITY 2147483647
@@ -30,6 +38,7 @@ struct Network {
 class Heap {
     public:
         Heap();
+        ~Heap();
         void makeConnections();
         void print();
         int minimumCoastNetwork();
@@ -63,6 +72,10 @@ Heap::Heap() {
         vector[i].priority = INFINITY;
         vector[i].list = List();
     }
+}
+
+Heap::~Heap() {
+    delete vector;
 }
 
 int Heap::search(char* IP) {
@@ -271,6 +284,8 @@ int main() {
     h.makeConnections();
 
     cout << h.minimumCoastNetwork() << endl;
+
+    h.~Heap();
 
     return 0;
 }
